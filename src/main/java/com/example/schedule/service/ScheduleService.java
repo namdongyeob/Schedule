@@ -2,12 +2,16 @@
 
     import com.example.schedule.dto.CreateScheduleRequest;
     import com.example.schedule.dto.CreateScheduleResponse;
+    import com.example.schedule.dto.GetScheduleResponse;
     import com.example.schedule.entity.Schedule;
     import com.example.schedule.repository.ScheduleRepository;
     import lombok.RequiredArgsConstructor;
     import org.springframework.scheduling.annotation.Schedules;
     import org.springframework.stereotype.Service;
     import org.springframework.transaction.annotation.Transactional;
+
+    import java.util.ArrayList;
+    import java.util.List;
 
     @Service
     @RequiredArgsConstructor // final 필드 자동으로 생성자를 만들어줌
@@ -31,5 +35,42 @@
                     savdSchedule.getCreatedAt(),
                     savdSchedule.getModifiedAt()
             );
+        }
+        @Transactional(readOnly = true)
+        public GetScheduleResponse getOne(Long scheduleId){
+            Schedule schedule = scheduleRepository.findById(scheduleId).orElseThrow(
+                    () -> new IllegalStateException("존재하지 않는 유저입니다.")
+            );
+            return new GetScheduleResponse(
+                    schedule.getId(),
+                    schedule.getTitle(),
+                    schedule.getContent(),
+                    schedule.getAuthor(),
+                    schedule.getCreatedAt(),
+                    schedule.getModifiedAt()
+            );
+        }
+        @Transactional(readOnly = true)
+        public List<GetScheduleResponse> getALl(String author) {
+            List<Schedule> schedules = scheduleRepository.findAll();
+            if (author != null){
+                schedules = scheduleRepository.findByAuthor(author);
+            } else {
+                schedules = scheduleRepository.findAll();
+            }
+
+            List<GetScheduleResponse> dtos = new ArrayList<>();
+            for (Schedule schedule : schedules){
+                GetScheduleResponse dto = new GetScheduleResponse(
+                        schedule.getId(),
+                        schedule.getTitle(),
+                        schedule.getContent(),
+                        schedule.getAuthor(),
+                        schedule.getCreatedAt(),
+                        schedule.getModifiedAt()
+                );
+                dtos.add(dto);
+            }
+            return dtos;
         }
     }
