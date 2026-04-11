@@ -1,11 +1,7 @@
 package com.example.schedule.controller;
 
-import com.example.schedule.dto.CreateScheduleRequest;
-import com.example.schedule.dto.CreateScheduleResponse;
-import com.example.schedule.dto.GetScheduleResponse;
+import com.example.schedule.dto.*;
 import com.example.schedule.service.ScheduleService;
-import jakarta.persistence.Id;
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -25,7 +21,7 @@ public class ScheduleController {
     return ResponseEntity.status(HttpStatus.CREATED).body(result);
 }
 @GetMapping("/{scheduleId}")
-    public ResponseEntity<GetScheduleResponse> GetOneSchedule(@PathVariable Long scheduleId){
+    public ResponseEntity<GetScheduleResponse> getOneSchedule(@PathVariable Long scheduleId){
     GetScheduleResponse result = scheduleService.getOne(scheduleId);
     return ResponseEntity.status(HttpStatus.OK).body(result);
 }
@@ -34,5 +30,19 @@ public class ScheduleController {
             @RequestParam(required = false) String author){
     List<GetScheduleResponse> result = scheduleService.getALl(author);
     return ResponseEntity.status(HttpStatus.OK).body(result);
+}
+@PatchMapping("/{scheduleId}")
+    public ResponseEntity<UpdateScheduleResponse> update(
+        @RequestBody UpdateScheduleRequest request,
+        @PathVariable Long scheduleId){
+    UpdateScheduleResponse result = scheduleService.update(scheduleId, request);
+    return ResponseEntity.status(HttpStatus.OK).body(result);
+}
+@DeleteMapping("/{scheduleId}")
+    public ResponseEntity<Void> delete (
+            @PathVariable Long scheduleId,
+            @RequestBody DeleteScheduleRequest request){
+    scheduleService.delete(scheduleId, request.getPassword());
+    return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
 }
 }
