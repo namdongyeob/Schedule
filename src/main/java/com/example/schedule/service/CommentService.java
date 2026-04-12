@@ -16,6 +16,18 @@ public class CommentService {
     private final ScheduleRepository scheduleRepository;
     @Transactional
     public CreateCommentResponse save(Long scheduleId,CreateCommentRequest request){
+        if (request.getContent() == null || request.getContent().isEmpty()){
+            throw new IllegalStateException("댓글 내용은 필수값입니다.");
+        }
+        if (request.getContent().length() > 100){
+            throw new IllegalStateException("댓글 내용은 100자 이내여야 합니다.");
+        }
+        if (request.getAuthor() == null || request.getAuthor().isEmpty()){
+            throw new IllegalStateException("작성자명은 필수값입니다.");
+        }
+        if (request.getPassword() == null || request.getPassword().isEmpty()){
+            throw new IllegalStateException("비밀번호는 필수값입니다.");
+        }
         scheduleRepository.findById(scheduleId).orElseThrow(
                 () -> new IllegalStateException("존재하지 않는 일정입니다.")
         );

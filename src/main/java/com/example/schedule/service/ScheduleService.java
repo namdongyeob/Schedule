@@ -6,7 +6,6 @@
     import com.example.schedule.repository.CommentRepository;
     import com.example.schedule.repository.ScheduleRepository;
     import lombok.RequiredArgsConstructor;
-    import org.springframework.scheduling.annotation.Schedules;
     import org.springframework.stereotype.Service;
     import org.springframework.transaction.annotation.Transactional;
 
@@ -20,6 +19,24 @@
         private final CommentRepository commentRepository;
         @Transactional
         public CreateScheduleResponse save(CreateScheduleRequest request){
+            if (request.getTitle() == null || request.getTitle().isEmpty()){
+                throw new IllegalStateException("제목은 필수값입니다.");
+            }
+            if (request.getTitle().length() > 30){
+                throw new IllegalStateException("제목은 30자 이내여야합니다.");
+            }
+            if (request.getContent() == null || request.getContent().isEmpty()){
+                throw new IllegalStateException("내용은 필수값입니다.");
+            }
+            if (request.getContent().length() > 200){
+                throw new IllegalStateException("내용은 200자 이내여야합니다.");
+            }
+            if (request.getAuthor() == null || request.getAuthor().isEmpty()){
+                throw new IllegalStateException("작성자명은 필수값입니다.");
+            }
+            if (request.getPassword() == null || request.getPassword().isEmpty()){
+                throw new IllegalStateException("비밀번호는 필수값입니다.");
+            }
             Schedule schedule = new Schedule(
                     request.getTitle(),
                     request.getContent(),
