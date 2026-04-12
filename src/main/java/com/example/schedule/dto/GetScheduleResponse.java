@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Getter
 @RequiredArgsConstructor
@@ -14,4 +15,5 @@ public class GetScheduleResponse {
         private final String author;
         private final LocalDateTime createdAt;
         private final LocalDateTime modifiedAt;
+        private final List<CreateCommentResponse> comments;
 }

@@ -1,7 +1,9 @@
     package com.example.schedule.service;
 
     import com.example.schedule.dto.*;
+    import com.example.schedule.entity.Comment;
     import com.example.schedule.entity.Schedule;
+    import com.example.schedule.repository.CommentRepository;
     import com.example.schedule.repository.ScheduleRepository;
     import lombok.RequiredArgsConstructor;
     import org.springframework.scheduling.annotation.Schedules;
@@ -15,6 +17,7 @@
     @RequiredArgsConstructor // final 필드 자동으로 생성자를 만들어줌
     public class ScheduleService {
         private final ScheduleRepository scheduleRepository; //Service가 Repository를 사용하기 위해 가져오는 것
+        private final CommentRepository commentRepository;
         @Transactional
         public CreateScheduleResponse save(CreateScheduleRequest request){
             Schedule schedule = new Schedule(
@@ -39,13 +42,26 @@
             Schedule schedule = scheduleRepository.findById(scheduleId).orElseThrow(
                     () -> new IllegalStateException("존재하지 않는 유저입니다.")
             );
+            List<Comment> comments = commentRepository.findByScheduleId(scheduleId);
+            List<CreateCommentResponse> commentDtos = new ArrayList<>();
+            for (Comment comment : comments){
+                commentDtos.add(new CreateCommentResponse(
+                        comment.getId(),
+                        comment.getContent(),
+                        comment.getAuthor(),
+                        comment.getScheduleId(),
+                        comment.getCreatedAt(),
+                        comment.getModifiedAt()
+                ));
+            }
             return new GetScheduleResponse(
                     schedule.getId(),
                     schedule.getTitle(),
                     schedule.getContent(),
                     schedule.getAuthor(),
                     schedule.getCreatedAt(),
-                    schedule.getModifiedAt()
+                    schedule.getModifiedAt(),
+                    commentDtos
             );
         }
         @Transactional(readOnly = true)
@@ -65,7 +81,8 @@
                         schedule.getContent(),
                         schedule.getAuthor(),
                         schedule.getCreatedAt(),
-                        schedule.getModifiedAt()
+                        schedule.getModifiedAt(),
+                        new ArrayList<>()
                 );
                 dtos.add(dto);
             }
