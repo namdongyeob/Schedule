@@ -38,7 +38,7 @@
 
 ## 📊 ERD
 
-(ERDCloud 캡처 이미지 첨부)
+<img width="345" height="175" alt="화면 캡처 2026-04-13 073211" src="https://github.com/user-attachments/assets/12e980c4-2edd-4c18-b6ce-a4c892c891cb" />
 
 ---
 
