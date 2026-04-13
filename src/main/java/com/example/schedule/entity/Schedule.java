@@ -10,11 +10,11 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDateTime;
 
-@Getter
-@Entity
-@Table(name ="schedules")
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
-@EntityListeners(AuditingEntityListener.class)
+@Getter // 모든 필드에 대해한 getter 메서드를 자동 생성
+@Entity // 이 클래스가 DB 테이블과 매핑되는 JPA 엔티티를 선언
+@Table(name ="schedules") // 실제 DB 테이블 이름을 "schedules"로 지정
+@NoArgsConstructor(access = AccessLevel.PROTECTED) // 기본 생성자를 PROTECTED로 생성 -> 외부에서 빈 객체 직접 생성 방지
+@EntityListeners(AuditingEntityListener.class) // @CreatedDatam, @LastModifiedData가 자동 동작하도록 해줌
 public class Schedule {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -27,18 +27,19 @@ public class Schedule {
     private String author;
     @Column(length = 100, nullable = false)
     private String password;
-    @CreatedDate
-    @Column(updatable = false)
+    @CreatedDate // entity가 처음 저장될 때 자동으로 현재 시각을 기록
+    @Column(updatable = false) // 이후 수정 불가
     private LocalDateTime createdAt;
-    @LastModifiedDate
+    @LastModifiedDate // entity가 수정될 떄마다 자동으로 현재 시각을 갱신
     private LocalDateTime modifiedAt;
-
+    //생성자
     public Schedule (String title,String content, String author, String password){
         this.title = title;
         this.content = content;
         this.author = author;
         this.password = password;
     }
+    // 일정 수정 메서드: 제목과 작성자만 변경 가능 (content, password는 수정 불가)
     public void update (String title, String author){
         this.title = title;
         this.author = author;
